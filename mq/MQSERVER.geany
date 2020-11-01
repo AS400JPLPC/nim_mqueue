@@ -1,0 +1,58 @@
+[editor]
+line_wrapping=false
+line_break_column=130
+auto_continue_multiline=true
+
+[file_prefs]
+final_new_line=true
+ensure_convert_new_lines=false
+strip_trailing_spaces=false
+replace_tabs=false
+
+[indentation]
+indent_width=4
+indent_type=1
+indent_hard_tab_width=8
+detect_indent=false
+detect_indent_width=false
+indent_mode=2
+
+[project]
+name=MQSERVER
+base_path=/home/soleil/NimScreen/mq/
+description=
+file_patterns=
+
+[long line marker]
+long_line_behaviour=1
+long_line_column=130
+
+[files]
+current_page=0
+FILE_NAME_0=635;C++;0;EUTF-8;1;1;0;%2Fhome%2Fsoleil%2FNimScreen%2Fmq%2Fsrc%2Fpgmq00.cpp;0;4
+FILE_NAME_1=333;Make;0;EUTF-8;1;1;0;%2Fhome%2Fsoleil%2FNimScreen%2Fmq%2FMakefile;0;4
+FILE_NAME_2=37;C++;0;EUTF-8;1;1;0;%2Fhome%2Fsoleil%2FNimScreen%2Fmq%2Fsrc%2Fcommon.h;0;4
+
+[VTE]
+last_dir=/home/soleil/NimScreen/mq/bin
+
+[build-menu]
+NF_00_LB=_Make
+NF_00_CM=make -f Makefile  PROD=false --trace clean all
+NF_00_WD=
+MakeFT_00_LB=Construire
+MakeFT_00_CM=make PROD=false --trace  clean all
+MakeFT_00_WD=%p
+MakeFT_01_LB=Build
+MakeFT_01_CM=make PROD=true clean all
+MakeFT_01_WD=%p
+MakeFT_02_LB=clean
+MakeFT_02_CM=make clean
+MakeFT_02_WD=%p
+filetypes=Make;
+EX_00_LB=_Execute
+EX_00_CM="%p/bin/%e" -p '/home/soleil/NimScreen/mq/bin/' -e 'term'  -d
+EX_00_WD=
+NF_02_LB=Make _Object
+NF_02_CM=make %e.o
+NF_02_WD=
