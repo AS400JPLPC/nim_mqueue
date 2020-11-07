@@ -1,4 +1,3 @@
-# termvte programme NIM<br /><br />
 #ÉTUDE MQUEUE <br />
 Jean-Pierre Laroche<br />
 
