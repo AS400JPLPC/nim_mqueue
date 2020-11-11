@@ -1,5 +1,5 @@
-#ÉTUDE MQUEUE <br />
-Jean-Pierre Laroche<br />
+** ÉTUDE MQUEUE** <br />
+Jean-Pierre Laroche <br />
 
 [man page mqueue](https://man7.org/linux/man-pages/man0/mqueue.h.0p.html)
 https://github.com/SgtWiggles/ume   thank you that inspired me to set up a dedicated terminal<br />
