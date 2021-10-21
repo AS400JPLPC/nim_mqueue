@@ -1,6 +1,6 @@
 import termkey
-import terminal , strformat
-import posix , os
+import strformat
+import posix
 import unicode
 
 
@@ -17,7 +17,6 @@ var mqd_a : MqAttr            # attribut mqreceive
 
 var bytes_send :cstring       # variable mq_receive
 
-var mq_priority: int          # variable mqreceive priority
 
 var send:cint                 # code retour mq_receive    -1 error
 
@@ -26,7 +25,7 @@ var ctrl : int                # code retour mq_getattr    -1 error
 
 proc getRep() :string =
   stdin.flushFile
-  showCursor() 
+  onCursor()
   var chx :string
   var keyc :TKey
   gotoXY(20,1)
@@ -42,57 +41,59 @@ proc getRep() :string =
     stdout.flushFile
 
 proc main() =
-  #init terminal 
-  initScreen(24,132,"Test KEYBOARD")
+  #init terminal
+  initTerm(24,132,"Test KEYBOARD")
   setBackgroundColor(bgBlue)
-  eraseScreen()
-  showCursor()
+  eraseTerm()
+  onCursor()
 
   # initialize the queue attributes
 
-  mqd_a.mq_flags = 0         # 0 Normal 
+  mqd_a.mq_flags = 0         # 0 Normal
 
-  mqd_a.mq_maxmsg = MAX_NMSG # max message next wait 
+  mqd_a.mq_maxmsg = MAX_NMSG # max message next wait
 
   mqd_a.mq_msgsize = MSGLEN   # len mq_msgsize global général
 
   mqd_a.mq_curmsgs = 0        # nbr message dans la mq
+
+
 
   # Only demo
   #discard mq_unlink(QUEUE_NAME) # détache MQ
   #discard mq_close(mqd_t)       # destroy MQ
 
   # create the message
-  mqd_t =  mq_open(QUEUE_NAME,O_RDWR or O_CREAT,0o640,mqd_a.addr ) # umask 640 Linux manuel
+  mqd_t =  mq_open(cstring(QUEUE_NAME),O_RDWR or O_CREAT,0o640,mqd_a.addr ) # umask 640 Linux manuel
   gotoXY(5,10)
   writeStyled(fmt"mqd_t--> {mqd_t}")
 
-  var choix : string 
+  var choix : string
   # send message for test
   while choix != "q":
 
-    bytes_send = fmt"Bonjour"
+    bytes_send = cstring(fmt"Bonjour")
     send = mq_send(mqd_t, bytes_send,runeLen($bytes_send),20)
-    gotoXY(7,10); 
+    gotoXY(7,10);
     writeStyled(fmt"{bytes_send}   {runeLen($bytes_send)}")
 
     for i in 1..4:
       bytes_send = ""
-      bytes_send = fmt"message num:{$i}"
+      bytes_send = cstring(fmt"message num:{$i}")
       send = mq_send(mqd_t, bytes_send,runeLen($bytes_send), 20)
       gotoXY(i+8,10)
       writeStyled(fmt"{bytes_send}   {runeLen($bytes_send)}")
-    
+
     bytes_send = ""
-    bytes_send = fmt"ôêèéîà123456"
+    bytes_send = cstring(fmt"ôêèéîà123456")
     send = mq_send(mqd_t, bytes_send,len($bytes_send), 20);
-    gotoXY(6,10) 
+    gotoXY(6,10)
     writeStyled(fmt"{bytes_send}   {runeLen($bytes_send)}   {len($bytes_send)}")
-    
+
     choix = getRep()
 
   bytes_send = ""
-  bytes_send = fmt"EXIT"
+  bytes_send = cstring(fmt"EXIT")
   send = mq_send(mqd_t, bytes_send,runeLen($bytes_send), 10);
   gotoXY(22,1)
   writeStyled(fmt"{bytes_send}   {runeLen($bytes_send)}")
@@ -101,6 +102,6 @@ proc main() =
   gotoXY(24,1)
   writeStyled(fmt"ctrl--> {ctrl}  ")
   writeStyled(fmt"getattr-->  mqd_a.mq_flag={mqd_a.mq_flags} -- mqd_a.mq_maxmsg={mqd_a.mq_maxmsg} -- mqd_a.mq_msgsize={mqd_a.mq_msgsize} -- mqd_a.mq_curmsgs={ mqd_a.mq_curmsgs}")
-  
+
   discard getFunc()
 main()

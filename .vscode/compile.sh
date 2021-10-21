@@ -12,7 +12,7 @@ fcGreen='\033[32m'
 #-------------------------------------------------------------------
 if [[ ! "$2" =~ '.nim' ]]; then
 echo -en $faStabilo$fcJaune"$2 -->"$faStabilo$fcRouge"ce n'est pas un fichier .nim \033[0;0m\\n"
-exit 0 
+exit 0
 fi
 
 
@@ -36,10 +36,10 @@ fi
 #-------------------------------------------------------------------
 
 if [ "$mode" == "DEBUG" ] ; then
-  if [ "$projet_bin" == "TermVte" ] || [ "$projet_bin" == "contactVte" ] || [ "$projet_bin" == "TermVteGrid" ] || [ "$projet_bin" == "testVte" ] ; then
+  if [ "$projet_bin" == "qmsend" ] || [ "$projet_bin" == "qmreceive" ] ; then
   	( set -x ; \
-    		nim c -f --gc:orc -d:forceGtk  \
-			-d:useMalloc --deadCodeElim:on --panics:on \
+    	  nim c -f --gc:orc -d:forceGtk \
+			-d:useMalloc  --panics:on \
 			--verbosity:1 \
 			--warning[UnusedImport]:on --hint[Performance]:off --warning[Deprecated]:on --warning[EachIdentIsTuple]:on \
 			--threads:on \
@@ -58,19 +58,22 @@ if [ "$mode" == "DEBUG" ] ; then
 fi
 
 if [ "$mode" == "PROD" ] ; then
-  if [ "$projet_bin" == "TermVte" ] || [ "$projet_bin" == "contactVte" ]  || [ "$projet_bin" == "TermVteGrid" ] || [ "$projet_bin" == "testVte" ] ; then
+  if [ "$projet_bin" == "qmsend" ] || [ "$projet_bin" == "qmreceive" ] ; then
   	( set -x ; \
-    		nim  c -f --gc:orc -d:forceGtk -d:useMalloc --deadCodeElim:on  \
+    		nim  c -f --gc:orc -d:forceGtk -d:useMalloc \
+			--passc:-flto --passC:-fno-builtin-memcpy \
 			--verbosity:0 --hints:off  \
 			--threads:on  --app:GUI  \
-			--passL:-no-pie --passc:-flto -d:release \-o:$projet_bin   $projet_src ; \
+			--passL:-no-pie -d:release \
+			-o:$projet_bin   $projet_src ; \
 	)
   else
   	( set -x ; \
-    		nim  c -f --gc:orc -d:useMalloc --deadCodeElim:on \
+    		nim  c -f --gc:orc -d:useMalloc \
+			--passc:-flto --passC:-fno-builtin-memcpy \
 			--verbosity:0 --hints:off  \
 			--threads:on \
-			--passc:-flto -d:release  \
+			 -d:release  \
 			-o:$projet_bin   $projet_src ; \
 	)
   fi
@@ -78,23 +81,23 @@ fi
 
 if [ "$mode" == "TEST" ] ; then
 	( set -x ; \
-		nim  c -f --gc:orc  -d:useMalloc  --nilseqs:on\
+				nim  c -f --gc:orc  -d:useMalloc  --warning[Deprecated]:off \
 			--hint[Performance]:off  --warning[Deprecated]:on --warning[EachIdentIsTuple]:on \
 			--threads:on \
 			--passL:-no-pie \
-      --passL:-lrt \
+     	--passL:-lrt \
 			-o:$projet_bin   $projet_src ; \
 	)
 fi
 #-------------------------------------------------------------------
 # resultat
 #-------------------------------------------------------------------
-  
+
 	echo -en '\033[0;0m'	# video normal
 	echo " "
 	if test -f "$projet_bin"; then
 		echo -en $faStabilo$fcCyan"BUILD "$mode"\033[0;0m  "$fcJaune$projet_src"->\033[0;0m  "$fcGreen $projet_bin "\033[0;0m"
-		echo -en "  size : " 
+		echo -en "  size : "
 		ls -lrtsh $projet_bin | cut -d " " -f6
 	else
 		echo -en $faStabilo$fcCyan"BUILD "$mode"\033[0;0m  "$fcJaune$projet_src"->\033[0;0m  "$faStabilo$fcRouge"not compile\033[0;0m\n"
